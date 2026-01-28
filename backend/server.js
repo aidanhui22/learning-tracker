@@ -30,12 +30,12 @@ app.post('/api/entries', async (req, res) => {
         const result = await pool.query(query, values);
         res.status(200).json(result.rows[0]);
     } catch (err) {
-        console.error("Error: ", err.message);
-        res.status(400).json(err);
+        const response = handlePostgresError(err);
+        res.status(response.status).json(response);
     }
 });
 
-app.get('/api/entries', async (req, res) => {
+app.get("/api/entries", async (req, res) => {
     const query = "SELECT * FROM entries ORDER BY entry_date DESC";
 
     try {
@@ -47,9 +47,36 @@ app.get('/api/entries', async (req, res) => {
     }
 });
 
+app.delete("/api/entries/:id", async (req, res) => {
+    const id = req.params.id;
+    const values = [id];
+    const query = "DELETE FROM entries WHERE id = $1";
+
+    try {
+        const result = await pool.query(query, values);
+        if (result.rowCount === 0) {
+            return res.status(404).send("Entry does not exist");
+        }
+        res.status(200).json({ message: "Entry deleted successfully" });
+        console.log("Successfully deleted entry");
+    } catch (err) {
+        console.error("Error: ", err.message);
+        res.status(400).json(result);
+    }
+});
+
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
   console.log(`Health check: http://localhost:${PORT}/api/health`);
+});
+
+const handlePostgresError = ((err) => {
+    switch(err.code) {
+        case '23505':
+            return { status: 400, error: "Entry already exists for this date"};
+        default:
+            return { status: 500, error: "Internal error"};
+    }
 });
