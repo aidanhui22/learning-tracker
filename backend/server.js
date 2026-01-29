@@ -17,6 +17,7 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Adds entry to database
 app.post('/api/entries', async (req, res) => {
     const entry_date = req.body.entry_date;
     const learned = req.body.learned;
@@ -35,6 +36,7 @@ app.post('/api/entries', async (req, res) => {
     }
 });
 
+// Gets all entries from database, returned in JSON
 app.get("/api/entries", async (req, res) => {
     const query = "SELECT * FROM entries ORDER BY entry_date DESC";
 
@@ -47,6 +49,42 @@ app.get("/api/entries", async (req, res) => {
     }
 });
 
+// Returns current streak
+app.get("/api/entries/streak", async (req, res) => {
+    const query = "SELECT entry_date::TEXT FROM entries ORDER BY entry_date DESC";
+
+    try {
+        const result = await pool.query(query);
+        console.log(result.rows);
+        let count = 0;
+        let lastDate;
+        for (const row of result.rows) {
+            let currentDate = row.entry_date;
+            if (lastDate && calculateDays(currentDate, lastDate) > 1) {
+                break;
+            }
+            count++;
+            lastDate = currentDate;
+        }
+        console.log(count);
+        res.status(200).json(count);
+    } catch (err) {
+        console.error("Error: ", err.message);
+        res.status(500).json(err);
+    }
+});
+
+const calculateDays = ((startDate, endDate) => {
+    let start = new Date(startDate);
+    let end = new Date(endDate);
+
+    let timeDiff = end - start;
+    let daysDiff = timeDiff / (1000 * 3600 * 24);
+
+    return daysDiff;
+});
+
+// Deletes an entry by ID
 app.delete("/api/entries/:id", async (req, res) => {
     const id = req.params.id;
     const values = [id];
