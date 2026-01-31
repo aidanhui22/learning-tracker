@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 
-const FormComponent = () => {
+const FormComponent = ({ onEntryAdded }) => {
     const [newLearn, setNewLearn] = useState('');
     const [reinforceLearn, setReinforce] = useState('');
     const [tomorrowLearn, setTomorrow] = useState('');
 
     const handleNew = (event) => {
-        console.log('Entering new: ', event.target.value);
         setNewLearn(event.target.value);
     };
     const handleReinforce = (event) => {
@@ -32,6 +31,8 @@ const FormComponent = () => {
             const response = await fetch('/api/entries', requestOptions);
             if (!response.ok) {
                 console.log('Error');
+            } else {
+                onEntryAdded();
             }
         } catch (err) {
             console.log(err.message);
@@ -52,7 +53,11 @@ const FormComponent = () => {
                 Tomorrow:
                 <input onChange={handleTomorrow} />
             </label>
-            <button type='submit'>Submit</button>
+            <button 
+                type='submit'
+                disabled={newLearn.length < 3 && reinforceLearn.length < 3 && 
+                tomorrowLearn.length < 3}
+                >Submit</button>
         </form>
     );
 };

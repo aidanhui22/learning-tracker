@@ -1,29 +1,39 @@
-import React, { useEffect, useState } from 'react';
-
-const EntriesComponent = (() => {
-    const [entries, setEntries] = useState([]);
-
-    useEffect(() => {
-        async function fetchData() {
-            try {
-                const result = await fetch('/api/entries');
-                const data = await result.json();
-                setEntries(data);
-            } catch (err) {
-                console.log(err.message);
-            }
+const DisplayEntryComponent = (({ entries, onDelete }) => {
+    const current = entries;
+    const DeleteEntry = (async (id) => {
+    try {
+        const requestOptions = {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
         }
-        fetchData();
-    }, [])
+        const result = await fetch(`/api/entries/${id}`, requestOptions);
+        console.log(result);
+        if (!result.ok) {
+            console.log('Error');
+        } else {
+            onDelete();
+        }
+        } catch (err) {
+            console.log(err.message);
+        }
+    });
     
     return (
         <div>
-            {entries.map(entry => (
-                <p key={entry.id}>{entry.id} {entry.learned} {entry.reinforced} {entry.tomorrow}</p>
+            {current.length > 0 &&
+                <p>List of entries</p>}
+            {current.map(entry => (
+                <p key={entry.id}>
+                    {entry.id} {entry.learned} {entry.reinforced} {entry.tomorrow} 
+                    <button onClick={() => {
+                        DeleteEntry(entry.id);
+                    }}>
+                        Delete
+                    </button>
+                </p>
             ))}
         </div>
-
     );
 }); 
 
-export default EntriesComponent;
+export default DisplayEntryComponent;
