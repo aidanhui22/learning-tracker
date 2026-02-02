@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const FormComponent = ({ onEntryAdded }) => {
+const FormComponent = ({ refetchData , refetchStreak }) => {
     const [newLearn, setNewLearn] = useState('');
     const [reinforceLearn, setReinforce] = useState('');
     const [tomorrowLearn, setTomorrow] = useState('');
@@ -32,7 +32,8 @@ const FormComponent = ({ onEntryAdded }) => {
             if (!response.ok) {
                 console.log('Error');
             } else {
-                onEntryAdded();
+                refetchData();
+                refetchStreak();
             }
         } catch (err) {
             console.log(err.message);

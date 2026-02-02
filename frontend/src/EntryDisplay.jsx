@@ -1,4 +1,4 @@
-const DisplayEntryComponent = (({ entries, onDelete }) => {
+const DisplayEntryComponent = (({ entries, refetchData, refetchStreak }) => {
     const current = entries;
     const DeleteEntry = (async (id) => {
     try {
@@ -7,11 +7,11 @@ const DisplayEntryComponent = (({ entries, onDelete }) => {
             headers: { 'Content-Type': 'application/json' },
         }
         const result = await fetch(`/api/entries/${id}`, requestOptions);
-        console.log(result);
         if (!result.ok) {
             console.log('Error');
         } else {
-            onDelete();
+            refetchData();
+            refetchStreak();
         }
         } catch (err) {
             console.log(err.message);

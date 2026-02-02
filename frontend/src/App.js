@@ -15,21 +15,36 @@ function App() {
       }
   }
 
+  const [streak, setStreak] = useState(0);
+
+    async function fetchStreak() {
+        try {
+            const result = await fetch('/api/entries/streak');
+            const data = await result.json();
+            setStreak(data);
+        } catch (err) {
+            console.log(err.message);
+        }
+    } 
+
   useEffect(() => {
     fetchData();
+    fetchStreak();
   }, [])
 
   return (
-    <header> Learning Tracker! 
+    <header> Learning Tracker! Current Streak: {streak}
       <div>
         <FormComponent 
-          onEntryAdded={fetchData()}
+          refetchData={fetchData}
+          refetchStreak={fetchStreak}
         /> 
       </div>
       <div>
         <DisplayEntryComponent 
           entries={entries}
-          onDelete={fetchData}
+          refetchData={fetchData}
+          refetchStreak={fetchStreak}
         />
       </div>
     </header>

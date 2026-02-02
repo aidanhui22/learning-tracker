@@ -55,7 +55,6 @@ app.get("/api/entries/streak", async (req, res) => {
 
     try {
         const result = await pool.query(query);
-        console.log(result.rows);
         let count = 0;
         let lastDate;
         for (const row of result.rows) {
@@ -66,7 +65,6 @@ app.get("/api/entries/streak", async (req, res) => {
             count++;
             lastDate = currentDate;
         }
-        console.log(count);
         res.status(200).json(count);
     } catch (err) {
         console.error("Error: ", err.message);
