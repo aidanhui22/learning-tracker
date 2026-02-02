@@ -7,12 +7,18 @@ const FormComponent = ({ refetchData , refetchStreak }) => {
 
     const handleNew = (event) => {
         setNewLearn(event.target.value);
+        event.target.style.height = 'auto';
+        event.target.style.height = event.target.scrollHeight + 'px';
     };
     const handleReinforce = (event) => {
         setReinforce(event.target.value);
+        event.target.style.height = 'auto';
+        event.target.style.height = event.target.scrollHeight + 'px';
     };
     const handleTomorrow = (event) => {
         setTomorrow(event.target.value);
+        event.target.style.height = 'auto';
+        event.target.style.height = event.target.scrollHeight + 'px';
     };
 
     const handleSubmit = async (event) => {
@@ -41,20 +47,21 @@ const FormComponent = ({ refetchData , refetchStreak }) => {
     }
 
     return (
-        <form onSubmit={handleSubmit}>
-            <label>
-                New:
-                <input onChange={handleNew} />
+        <form onSubmit={handleSubmit} className='Form'>
+            <label style={{padding:'2%'}}>
+                <p>New:</p>
+                <textarea className='Input-size' onChange={handleNew} />
             </label>
-            <label>
-                Reinforced:
-                <input onChange={handleReinforce} />
+            <label style={{padding:'2%'}}>
+                <p>Reinforced:</p>
+                <textarea className='Input-size' onChange={handleReinforce} />
             </label>
-            <label>
-                Tomorrow:
-                <input onChange={handleTomorrow} />
+            <label style={{padding:'2%'}}>
+                <p>Tomorrow:</p>
+                <textarea className='Input-size' onChange={handleTomorrow} />
             </label>
             <button 
+                className='Submit-button'
                 type='submit'
                 disabled={newLearn.length < 3 && reinforceLearn.length < 3 && 
                 tomorrowLearn.length < 3}

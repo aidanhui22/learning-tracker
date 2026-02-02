@@ -21,15 +21,20 @@ const DisplayEntryComponent = (({ entries, refetchData, refetchStreak }) => {
     return (
         <div>
             {current.length > 0 &&
-                <p>List of entries</p>}
+                <p>List of entries</p> 
+            }
+            {current.length === 0 &&
+                <p>No entries!</p>}
             {current.map(entry => (
-                <p key={entry.id}>
-                    {entry.id} {entry.learned} {entry.reinforced} {entry.tomorrow} 
-                    <button onClick={() => {
+                <p style={{}} key={entry.id}>
+                    {entry.id} <button onClick={() => {
                         DeleteEntry(entry.id);
                     }}>
                         Delete
                     </button>
+                    <p>New: {entry.learned}</p>
+                    <p>Reinforced: {entry.reinforced}</p>
+                    <p>Tomorrow: {entry.tomorrow}</p> 
                 </p>
             ))}
         </div>

@@ -1,0 +1,61 @@
+.Header {
+    font-size: larger;
+    background-color:beige;
+    border-radius: 30px;
+    padding: 1%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.Container {
+    display: flex;
+    gap: 2%;
+
+}
+
+.Left-container {
+    padding: 20px;
+    width: 50%;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.Right-container {
+    padding: 20px;
+    width: 50%;
+    word-wrap: break-word;
+    overflow-wrap: break-word; 
+    word-break: break-all;     
+}
+
+.Form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+}
+
+.Submit-button {
+    display:flex;
+    flex-direction: column;
+    font-size: medium;
+    border-radius: 30px;
+    margin-top: 1%;
+    margin-left: 4%;
+    margin-right: 4%;
+}
+
+.Input-size {
+    width: 100%;
+    resize: vertical; 
+    font-family: inherit; 
+}
+
+.Header-container {
+    margin-left: 30%;
+    margin-right: 30%;
+    margin-bottom: 2%;
+    margin-top: 1%;
+}
