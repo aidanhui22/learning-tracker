@@ -10,10 +10,10 @@ This is designed as a single-user app with no authentication (purely for demonst
 
 ## Why I Built This
 
-I personally struggled with tracking learnings from classes, or more recently Leetcode storing them in physical notes that I'd never read again. Learning Tracker is a simple solution that:
+I personally struggled with tracking learnings from classes/LeetCode, storing them in physical notes that I'd never read again. Learning Tracker is a simple solution that:
 - Has three entries to trigger recall when rereading
 - Is simple enough so it doesn't become a chore
-- Stores all entries in a database that can be deleted
+- Stores all entries in a database that can be deleted/edited.
 
 ## Features
 
@@ -63,8 +63,7 @@ npm install
 
 npm start
 ```
-
-App runs at `http://localhost:3000`
+App will run automatically on your browser when npm start is entered on frontend.
 
 ## Future Plans
 
