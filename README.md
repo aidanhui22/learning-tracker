@@ -1,0 +1,76 @@
+# Learning Tracker
+
+A full-stack React app that stores what you learned and reinforced today, and what you will learn tomorrow. It displays all past entries and a streak counter for consecutive daily entries.
+
+## Note
+
+This is designed as a single-user app with no authentication (purely for demonstration purposes)
+
+**[Live Demo →](https://learning-tracker-eta.vercel.app)**
+
+## Why I Built This
+
+I personally struggled with tracking learnings from classes, or more recently Leetcode storing them in physical notes that I'd never read again. Learning Tracker is a simple solution that:
+- Has three entries to trigger recall when rereading
+- Is simple enough so it doesn't become a chore
+- Stores all entries in a database that can be deleted
+
+## Features
+
+- Create, view, and delete daily learning entries
+- Auto-expanding text inputs for better UX
+- Automatic streak calculation for consecutive days
+
+## Tech Stack
+
+**Frontend:** React, CSS  
+**Backend:** PostgreSQL, Node.js, Express  
+**Deployment:** Railway (backend + database), Vercel (frontend)  
+
+## Running Locally
+
+### Prerequisites
+- Node.js installed
+- PostgreSQL installed and running
+
+### Backend Setup
+```bash
+git clone https://github.com/aidanhui22/learning-tracker.git
+cd learning-tracker
+cd backend
+npm install
+
+# Create .env file with:
+# DB_USER=your_user
+# DB_HOST=localhost
+# DB_NAME=learning_tracker
+# DB_PASSWORD=your_password
+# DB_PORT=5432
+
+# Create database and run schema
+psql -U your_user -d learning_tracker -f database.sql
+
+npm start
+```
+
+### Frontend Setup
+```bash
+cd frontend
+npm install
+
+# Create .env file with:
+# REACT_APP_API_URL=http://localhost:5000
+
+npm start
+```
+
+App runs at `http://localhost:3000`
+
+## Future Plans
+
+- Auth, user accounts
+- Edit entries
+
+---
+
+Built by [Aidan Hui](https://github.com/aidanhui22) | [LinkedIn](https://www.linkedin.com/in/aidan-hui-87b7721b3/)
