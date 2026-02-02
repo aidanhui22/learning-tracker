@@ -34,7 +34,7 @@ const FormComponent = ({ refetchData , refetchStreak }) => {
                     reinforced: reinforceLearn, 
                     tomorrow: tomorrowLearn })
             };
-            const response = await fetch('/api/entries', requestOptions);
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/entries`, requestOptions);
             if (!response.ok) {
                 console.log('Error');
             } else {

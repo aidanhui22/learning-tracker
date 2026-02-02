@@ -8,7 +8,7 @@ function App() {
 
   async function fetchData() {
       try {
-          const result = await fetch('/api/entries');
+          const result = await fetch(`${process.env.REACT_APP_API_URL}/api/entries`);
           const data = await result.json();
           setEntries(data);
       } catch (err) {
@@ -20,7 +20,7 @@ function App() {
 
     async function fetchStreak() {
         try {
-            const result = await fetch('/api/entries/streak');
+            const result = await fetch(`${process.env.REACT_APP_API_URL}/api/entries/streak`);
             const data = await result.json();
             setStreak(data);
         } catch (err) {

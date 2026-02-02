@@ -6,7 +6,7 @@ const DisplayEntryComponent = (({ entries, refetchData, refetchStreak }) => {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },
         }
-        const result = await fetch(`/api/entries/${id}`, requestOptions);
+        const result = await fetch(`${process.env.REACT_APP_API_URL}/api/entries/${id}`, requestOptions);
         if (!result.ok) {
             console.log('Error');
         } else {
