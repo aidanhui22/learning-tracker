@@ -42,6 +42,9 @@ const DisplayEntryComponent = ({ entries, refetchData, refetchStreak }) => {
               onCancel={() => {
                 setEditingId(null);
               }}
+              learned={entry.learned}
+              reinforced={entry.reinforced}
+              tomorrow={entry.tomorrow}
             />
           ) : (
             // Show normal display

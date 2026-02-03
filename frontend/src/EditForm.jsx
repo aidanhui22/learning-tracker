@@ -1,12 +1,19 @@
 import React, { useState } from "react";
 
-const EditComponent = ({ entryId, onSave, onCancel }) => {
+const EditComponent = ({
+  entryId,
+  onSave,
+  onCancel,
+  learned,
+  reinforced,
+  tomorrow,
+}) => {
   const id = entryId.id;
 
   console.log(id);
-  const [newLearn, setNewLearn] = useState("");
-  const [reinforceLearn, setReinforce] = useState("");
-  const [tomorrowLearn, setTomorrow] = useState("");
+  const [newLearn, setNewLearn] = useState(learned);
+  const [reinforceLearn, setReinforce] = useState(reinforced);
+  const [tomorrowLearn, setTomorrow] = useState(tomorrow);
 
   const handleNew = (event) => {
     setNewLearn(event.target.value);
@@ -54,15 +61,27 @@ const EditComponent = ({ entryId, onSave, onCancel }) => {
     <form onSubmit={handleSubmit} className="Form">
       <label style={{ padding: "2%" }}>
         <p>New:</p>
-        <textarea className="Input-size" onChange={handleNew} />
+        <textarea
+          defaultValue={learned}
+          className="Input-size"
+          onChange={handleNew}
+        />
       </label>
       <label style={{ padding: "2%" }}>
         <p>Reinforced:</p>
-        <textarea className="Input-size" onChange={handleReinforce} />
+        <textarea
+          defaultValue={reinforced}
+          className="Input-size"
+          onChange={handleReinforce}
+        />
       </label>
       <label style={{ padding: "2%" }}>
         <p>Tomorrow:</p>
-        <textarea className="Input-size" onChange={handleTomorrow} />
+        <textarea
+          defaultValue={tomorrow}
+          className="Input-size"
+          onChange={handleTomorrow}
+        />
       </label>
       <button
         onClick={handleSubmit}
@@ -76,7 +95,9 @@ const EditComponent = ({ entryId, onSave, onCancel }) => {
       >
         Submit
       </button>
-      <button className="Submit-button">Cancel</button>
+      <button className="Submit-button" onClick={onCancel}>
+        Cancel
+      </button>
     </form>
   );
 };
