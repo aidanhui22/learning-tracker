@@ -17,7 +17,7 @@ I personally struggled with tracking learnings from classes/LeetCode, storing th
 
 ## Features
 
-- Create, view, and delete daily learning entries
+- Create, view, edit and delete daily learning entries
 - Auto-expanding text inputs for better UX
 - Automatic streak calculation for consecutive days
 
@@ -68,7 +68,6 @@ App will run automatically on your browser when npm start is entered on frontend
 ## Future Plans
 
 - Auth, user accounts
-- Edit entries
 
 ---
 
