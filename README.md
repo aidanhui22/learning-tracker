@@ -4,7 +4,7 @@ A full-stack React app that stores what you learned and reinforced today, and wh
 
 ## Note
 
-This is designed as a single-user app with no authentication (purely for demonstration purposes)
+**Currently implementing auth and user accounts, is not functional as of yet.**
 
 **[Live Demo →](https://learning-tracker-eta.vercel.app)**
 
