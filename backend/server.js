@@ -1,6 +1,9 @@
 const express = require("express");
 const cors = require("cors");
 const pool = require("./db");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+const saltRounds = 10;
 
 const app = express();
 
@@ -17,36 +20,109 @@ app.get("/api/health", (req, res) => {
   });
 });
 
+app.post("/auth/signup", async (req, res) => {
+  const email = req.body.email;
+  const password_hash = await bcrypt.hash(req.body.password, saltRounds);
+
+  const query =
+    "INSERT INTO users (email, password_hash) VALUES ($1, $2) RETURNING *";
+  const values = [email, password_hash];
+
+  try {
+    const result = await pool.query(query, values);
+    const user = result.rows[0];
+    const token = jwt.sign(
+      { userId: user.id },
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: "7d" },
+    );
+    res.sendStatus(200).json({ token });
+  } catch (err) {
+    const response = handlePostgresError(err);
+    res.sendStatus(response.status).json(response);
+  }
+});
+
+app.post("/auth/login", async (req, res) => {
+  const email = req.body.email;
+  const input_password = req.body.password;
+  const locateUser = "SELECT * from users WHERE email = $1";
+
+  try {
+    const result = await pool.query(locateUser, [email]);
+    if (result.rowCount === 0) {
+      return res.sendStatus(400).json({ error: "Email does not exist!" });
+    }
+
+    const user = result.rows[0];
+    const pass_success = await bcrypt.compare(
+      input_password,
+      user.password_hash,
+    );
+    if (!pass_success) {
+      return res.sendStatus(400).json({ message: "Wrong password!" });
+    }
+    const token = jwt.sign(
+      { userId: user.id },
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: "7d" },
+    );
+    return res.sendStatus(200).json({ token });
+  } catch (err) {
+    const response = handlePostgresError(err);
+    res.sendStatus(response.status).json(response);
+  }
+});
+
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+  console.log("Auth header ", authHeader);
+  if (token == null) {
+    return res.sendStatus(401);
+  }
+
+  try {
+    const result = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    req.user = result;
+    next();
+  } catch (err) {
+    return res.sendStatus(403).json({ error: "JWT Verify Failed" });
+  }
+};
+
 // Adds entry to database
-app.post("/api/entries", async (req, res) => {
+app.post("/api/entries", authenticateToken, async (req, res) => {
   const entry_date = req.body.entry_date;
   const learned = req.body.learned;
   const reinforced = req.body.reinforced;
   const tomorrow = req.body.tomorrow;
+  const user_id = req.user.userId;
 
   const query =
-    "INSERT INTO entries (entry_date, learned, reinforced, tomorrow) VALUES ($1, $2, $3, $4) RETURNING *";
-  const values = [entry_date, learned, reinforced, tomorrow];
+    "INSERT INTO entries (entry_date, learned, reinforced, tomorrow, user_id) VALUES ($1, $2, $3, $4, $5) RETURNING *";
+  const values = [entry_date, learned, reinforced, tomorrow, user_id];
 
   try {
     const result = await pool.query(query, values);
-    res.status(200).json(result.rows[0]);
+    res.sendStatus(200).json(result.rows[0]);
   } catch (err) {
     const response = handlePostgresError(err);
-    res.status(response.status).json(response);
+    res.sendStatus(response.status).json(response);
   }
 });
 
 // Gets all entries from database, returned in JSON
-app.get("/api/entries", async (req, res) => {
-  const query = "SELECT * FROM entries ORDER BY entry_date DESC";
+app.get("/api/entries", authenticateToken, async (req, res) => {
+  const query =
+    "SELECT * FROM entries WHERE user_id = $1 ORDER BY entry_date DESC";
 
   try {
-    const result = await pool.query(query);
-    res.status(200).json(result.rows);
+    const result = await pool.query(query, [req.user.userId]);
+    res.sendStatus(200).json(result.rows);
   } catch (err) {
     console.error("Error: ", err.message);
-    res.status(500).json(err);
+    res.sendStatus(500).json(err);
   }
 });
 
@@ -66,10 +142,10 @@ app.get("/api/entries/streak", async (req, res) => {
       count++;
       lastDate = currentDate;
     }
-    res.status(200).json(count);
+    res.sendStatus(200).json(count);
   } catch (err) {
     console.error("Error: ", err.message);
-    res.status(500).json(err);
+    res.sendStatus(500).json(err);
   }
 });
 
@@ -96,10 +172,10 @@ app.patch("/api/entries/:id", async (req, res) => {
 
   try {
     const result = await pool.query(query, values);
-    res.status(200).json({ message: "Entry successfully changed" });
+    res.sendStatus(200).json({ message: "Entry successfully changed" });
   } catch (err) {
     console.error("Error: ", err.message);
-    res.status(400).json({ error: err.message });
+    res.sendStatus(400).json({ error: err.message });
   }
 });
 
@@ -112,13 +188,13 @@ app.delete("/api/entries/:id", async (req, res) => {
   try {
     const result = await pool.query(query, values);
     if (result.rowCount === 0) {
-      return res.status(404).send("Entry does not exist");
+      return res.sendStatus(404).send("Entry does not exist");
     }
-    res.status(200).json({ message: "Entry deleted successfully" });
+    res.sendStatus(200).json({ message: "Entry deleted successfully" });
     console.log("Successfully deleted entry");
   } catch (err) {
     console.error("Error: ", err.message);
-    res.status(400).json({ error: err.message });
+    res.sendStatus(400).json({ error: err.message });
   }
 });
 
