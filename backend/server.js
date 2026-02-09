@@ -36,10 +36,10 @@ app.post("/auth/signup", async (req, res) => {
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "7d" },
     );
-    res.sendStatus(200).json({ token });
+    res.status(200).json({ token });
   } catch (err) {
     const response = handlePostgresError(err);
-    res.sendStatus(response.status).json(response);
+    res.status(response.status).json(response);
   }
 });
 
@@ -51,7 +51,7 @@ app.post("/auth/login", async (req, res) => {
   try {
     const result = await pool.query(locateUser, [email]);
     if (result.rowCount === 0) {
-      return res.sendStatus(400).json({ error: "Email does not exist!" });
+      return res.status(400).json({ error: "Email does not exist!" });
     }
 
     const user = result.rows[0];
@@ -60,17 +60,17 @@ app.post("/auth/login", async (req, res) => {
       user.password_hash,
     );
     if (!pass_success) {
-      return res.sendStatus(400).json({ message: "Wrong password!" });
+      return res.status(400).json({ message: "Wrong password!" });
     }
     const token = jwt.sign(
       { userId: user.id },
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "7d" },
     );
-    return res.sendStatus(200).json({ token });
+    return res.status(200).json({ token });
   } catch (err) {
     const response = handlePostgresError(err);
-    res.sendStatus(response.status).json(response);
+    res.status(response.status).json(response);
   }
 });
 
@@ -87,7 +87,8 @@ const authenticateToken = (req, res, next) => {
     req.user = result;
     next();
   } catch (err) {
-    return res.sendStatus(403).json({ error: "JWT Verify Failed" });
+    console.log("JWT fail: ", err.message);
+    return res.sendStatus(403);
   }
 };
 
@@ -105,10 +106,10 @@ app.post("/api/entries", authenticateToken, async (req, res) => {
 
   try {
     const result = await pool.query(query, values);
-    res.sendStatus(200).json(result.rows[0]);
+    res.status(200).json(result.rows[0]);
   } catch (err) {
     const response = handlePostgresError(err);
-    res.sendStatus(response.status).json(response);
+    res.status(response.status).json(response);
   }
 });
 
@@ -119,10 +120,10 @@ app.get("/api/entries", authenticateToken, async (req, res) => {
 
   try {
     const result = await pool.query(query, [req.user.userId]);
-    res.sendStatus(200).json(result.rows);
+    res.status(200).json(result.rows);
   } catch (err) {
     console.error("Error: ", err.message);
-    res.sendStatus(500).json(err);
+    res.status(500).json(err);
   }
 });
 
@@ -142,10 +143,10 @@ app.get("/api/entries/streak", async (req, res) => {
       count++;
       lastDate = currentDate;
     }
-    res.sendStatus(200).json(count);
+    res.status(200).json(count);
   } catch (err) {
     console.error("Error: ", err.message);
-    res.sendStatus(500).json(err);
+    res.status(500).json(err);
   }
 });
 
@@ -172,10 +173,10 @@ app.patch("/api/entries/:id", async (req, res) => {
 
   try {
     const result = await pool.query(query, values);
-    res.sendStatus(200).json({ message: "Entry successfully changed" });
+    res.status(200).json({ message: "Entry successfully changed" });
   } catch (err) {
     console.error("Error: ", err.message);
-    res.sendStatus(400).json({ error: err.message });
+    res.status(400).json({ error: err.message });
   }
 });
 
@@ -188,13 +189,13 @@ app.delete("/api/entries/:id", async (req, res) => {
   try {
     const result = await pool.query(query, values);
     if (result.rowCount === 0) {
-      return res.sendStatus(404).send("Entry does not exist");
+      return res.status(404).send("Entry does not exist");
     }
-    res.sendStatus(200).json({ message: "Entry deleted successfully" });
+    res.status(200).json({ message: "Entry deleted successfully" });
     console.log("Successfully deleted entry");
   } catch (err) {
     console.error("Error: ", err.message);
-    res.sendStatus(400).json({ error: err.message });
+    res.status(400).json({ error: err.message });
   }
 });
 
