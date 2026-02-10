@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const app = express();
 const saltRounds = 10;
-
+// testing osxkeychain works
 // Middleware
 app.use(cors());
 app.use(express.json());
