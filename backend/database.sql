@@ -1,3 +1,10 @@
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    email TEXT UNIQUE NOT NULL,
+    password_hash TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE TABLE entries (
     id SERIAL PRIMARY KEY,
     entry_date DATE UNIQUE NOT NULL,
@@ -9,10 +16,3 @@ CREATE TABLE entries (
 );
 
 CREATE INDEX idx_entries_date ON entries(entry_date DESC);
-
-CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
-    email TEXT UNIQUE NOT NULL,
-    password_hash TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);

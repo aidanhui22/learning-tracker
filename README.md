@@ -44,11 +44,16 @@ npm install
 # DB_USER=your_user
 # DB_HOST=localhost
 # DB_NAME=learning_tracker
-# DB_PASSWORD=your_password
+# DB_PASSWORD=your_password (leave blank if on Mac)
 # DB_PORT=5432
+# PORT=5001
+# ACCESS_TOKEN_SECRET=**Generate in terminal and copy with node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"**
 
 # Create database and run schema
-psql -U your_user -d learning_tracker -f database.sql
+psql -U your_user -d postgresql
+CREATE DATABASE learning_tracker;
+\q
+psql -U YOUR_USER -d learning_tracker -f database.sql
 
 npm start
 ```
@@ -59,7 +64,7 @@ cd frontend
 npm install
 
 # Create .env file with:
-# REACT_APP_API_URL=http://localhost:5000
+# REACT_APP_API_URL=http://localhost:5001
 
 npm start
 ```

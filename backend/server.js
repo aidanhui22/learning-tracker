@@ -3,9 +3,8 @@ const cors = require("cors");
 const pool = require("./db");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const saltRounds = 10;
-
 const app = express();
+const saltRounds = 10;
 
 // Middleware
 app.use(cors());
@@ -36,6 +35,7 @@ app.post("/auth/signup", async (req, res) => {
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "7d" },
     );
+    console.log(token);
     res.status(200).json({ token });
   } catch (err) {
     const response = handlePostgresError(err);
@@ -67,8 +67,12 @@ app.post("/auth/login", async (req, res) => {
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "7d" },
     );
+    console.log(token);
     return res.status(200).json({ token });
   } catch (err) {
+    console.log("Full err ", err);
+    console.log("Error mess ", err.message)
+    console.log("Code: ", err.code);
     const response = handlePostgresError(err);
     res.status(response.status).json(response);
   }
@@ -128,11 +132,11 @@ app.get("/api/entries", authenticateToken, async (req, res) => {
 });
 
 // Returns current streak
-app.get("/api/entries/streak", async (req, res) => {
-  const query = "SELECT entry_date::TEXT FROM entries ORDER BY entry_date DESC";
+app.get("/api/entries/streak", authenticateToken, async (req, res) => {
+  const query = "SELECT entry_date::TEXT FROM entries WHERE user_id = $1 ORDER BY entry_date DESC";
 
   try {
-    const result = await pool.query(query);
+    const result = await pool.query(query, [req.user.userId]);
     let count = 0;
     let lastDate;
     for (const row of result.rows) {
@@ -162,7 +166,7 @@ const calculateDays = (startDate, endDate) => {
 };
 
 // Edits an entry by ID
-app.patch("/api/entries/:id", async (req, res) => {
+app.patch("/api/entries/:id", authenticateToken, async (req, res) => {
   const id = req.params.id;
   const query =
     "UPDATE entries SET learned = $1, reinforced = $2, tomorrow = $3 WHERE id = $4";
@@ -181,7 +185,7 @@ app.patch("/api/entries/:id", async (req, res) => {
 });
 
 // Deletes an entry by ID
-app.delete("/api/entries/:id", async (req, res) => {
+app.delete("/api/entries/:id", authenticateToken, async (req, res) => {
   const id = req.params.id;
   const values = [id];
   const query = "DELETE FROM entries WHERE id = $1";
