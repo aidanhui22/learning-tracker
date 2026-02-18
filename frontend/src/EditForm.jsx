@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 
 const EditComponent = ({
+  token,
   entryId,
   onSave,
   onCancel,
@@ -36,7 +37,10 @@ const EditComponent = ({
     try {
       const requestOptions = {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({
           learned: newLearn,
           reinforced: reinforceLearn,

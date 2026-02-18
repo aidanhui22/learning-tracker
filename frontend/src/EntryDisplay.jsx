@@ -1,7 +1,12 @@
 import { useState } from "react";
 import EditForm from "./EditForm";
 
-const DisplayEntryComponent = ({ entries, refetchData, refetchStreak }) => {
+const DisplayEntryComponent = ({
+  token,
+  entries,
+  refetchData,
+  refetchStreak,
+}) => {
   const current = entries;
   const [editingId, setEditingId] = useState(null);
 
@@ -9,7 +14,10 @@ const DisplayEntryComponent = ({ entries, refetchData, refetchStreak }) => {
     try {
       const requestOptions = {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       };
       const result = await fetch(
         `${process.env.REACT_APP_API_URL}/api/entries/${id}`,
@@ -34,6 +42,7 @@ const DisplayEntryComponent = ({ entries, refetchData, refetchStreak }) => {
           {editingId === entry.id ? (
             // Show edit form
             <EditForm
+              token={token}
               entryId={entry}
               onSave={() => {
                 refetchData();

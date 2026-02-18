@@ -5,7 +5,6 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const app = express();
 const saltRounds = 10;
-// testing osxkeychain works
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -26,18 +25,19 @@ app.post("/auth/signup", async (req, res) => {
   const query =
     "INSERT INTO users (email, password_hash) VALUES ($1, $2) RETURNING *";
   const values = [email, password_hash];
-
   try {
     const result = await pool.query(query, values);
     const user = result.rows[0];
+    console.log("UserID: ", user.id);
     const token = jwt.sign(
       { userId: user.id },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "7d" },
+      { expiresIn: "1d" },
     );
     console.log(token);
     res.status(200).json({ token });
   } catch (err) {
+    console.log(err.message);
     const response = handlePostgresError(err);
     res.status(response.status).json(response);
   }
@@ -65,13 +65,13 @@ app.post("/auth/login", async (req, res) => {
     const token = jwt.sign(
       { userId: user.id },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "7d" },
+      { expiresIn: "1d" },
     );
     console.log(token);
     return res.status(200).json({ token });
   } catch (err) {
     console.log("Full err ", err);
-    console.log("Error mess ", err.message)
+    console.log("Error mess ", err.message);
     console.log("Code: ", err.code);
     const response = handlePostgresError(err);
     res.status(response.status).json(response);
@@ -81,7 +81,6 @@ app.post("/auth/login", async (req, res) => {
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
-  console.log("Auth header ", authHeader);
   if (token == null) {
     return res.sendStatus(401);
   }
@@ -91,7 +90,6 @@ const authenticateToken = (req, res, next) => {
     req.user = result;
     next();
   } catch (err) {
-    console.log("JWT fail: ", err.message);
     return res.sendStatus(403);
   }
 };
@@ -133,7 +131,8 @@ app.get("/api/entries", authenticateToken, async (req, res) => {
 
 // Returns current streak
 app.get("/api/entries/streak", authenticateToken, async (req, res) => {
-  const query = "SELECT entry_date::TEXT FROM entries WHERE user_id = $1 ORDER BY entry_date DESC";
+  const query =
+    "SELECT entry_date::TEXT FROM entries WHERE user_id = $1 ORDER BY entry_date DESC";
 
   try {
     const result = await pool.query(query, [req.user.userId]);
