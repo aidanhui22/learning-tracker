@@ -2,10 +2,6 @@
 
 A full-stack React app that stores what you learned and reinforced today, and what you will learn tomorrow. It displays all past entries and a streak counter for consecutive daily entries.
 
-## Note
-
-**Currently implementing auth and user accounts, is not functional as of yet.**
-
 **[Live Demo →](https://learning-tracker-eta.vercel.app)**
 
 ## Why I Built This
