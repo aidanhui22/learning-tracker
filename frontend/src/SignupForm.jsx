@@ -40,10 +40,6 @@ const FormComponent = ({ refetchData, refetchStreak }) => {
     }
   };
 
-  const resetError = () => {
-    setError("");
-  };
-
   return (
     <form onSubmit={handleSubmit} className="Form">
       {error && <p style={{ color: "red" }}>{error}</p>}
@@ -59,7 +55,6 @@ const FormComponent = ({ refetchData, refetchStreak }) => {
         className="Submit-button"
         type="submit"
         disabled={email.length < 6 || !email.includes("@")}
-        resetError
       >
         Submit
       </button>

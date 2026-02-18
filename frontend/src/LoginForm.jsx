@@ -55,7 +55,6 @@ const FormComponent = ({ refetchData, refetchStreak }) => {
         className="Submit-button"
         type="submit"
         disabled={email.length < 6 || !email.includes("@")}
-        resetError
       >
         Submit
       </button>
