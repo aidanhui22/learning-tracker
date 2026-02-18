@@ -16,6 +16,7 @@ I personally struggled with tracking learnings from classes/LeetCode, storing th
 - Create, view, edit and delete daily learning entries
 - Auto-expanding text inputs for better UX
 - Automatic streak calculation for consecutive days
+- User accounts with JWT authentication
 
 ## Tech Stack
 
@@ -68,7 +69,7 @@ App will run automatically on your browser when npm start is entered on frontend
 
 ## Future Plans
 
-- Auth, user accounts
+- CSS improvements to make it not ugly :)
 
 ---
 
