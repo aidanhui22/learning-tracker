@@ -28,7 +28,6 @@ app.post("/auth/signup", async (req, res) => {
   try {
     const result = await pool.query(query, values);
     const user = result.rows[0];
-    console.log("UserID: ", user.id);
     const token = jwt.sign(
       { userId: user.id },
       process.env.ACCESS_TOKEN_SECRET,
@@ -67,7 +66,6 @@ app.post("/auth/login", async (req, res) => {
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "1d" },
     );
-    console.log(token);
     return res.status(200).json({ token });
   } catch (err) {
     console.log("Full err ", err);
