@@ -1,12 +1,9 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 const FormComponent = ({ refetchData, refetchStreak }) => {
   const [email, setEmail] = useState("");
   const [passwordHash, setPasswordHash] = useState("");
   const [error, setError] = useState("");
-
-  const navigate = useNavigate();
 
   const handleEmail = (event) => {
     setEmail(event.target.value);

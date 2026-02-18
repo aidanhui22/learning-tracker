@@ -59,7 +59,7 @@ function App() {
   useEffect(() => {
     fetchData();
     fetchStreak();
-  }, [token]);
+  }, [token]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div>
